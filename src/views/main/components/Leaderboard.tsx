@@ -118,13 +118,13 @@ const Leaderboard: React.FC = () => {
       )}
       
       {loading ? (
-        <div className="space-y-3 max-h-96">
+        <div className="space-y-3">
           {Array.from({ length: 3 }).map((_, index) => (
             <SkeletonEntry key={index} rank={index + 1} />
           ))}
         </div>
       ) : (
-        <div className="space-y-3 max-h-96">
+        <div className="space-y-3">
           {players.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-white/70 text-lg">No scores yet!</p>

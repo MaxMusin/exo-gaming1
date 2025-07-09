@@ -28,7 +28,7 @@ const MainView: React.FC<MainViewProps> = ({ onStartGame }) => {
       <div className="relative z-10 w-full max-w-6xl mx-auto">
         <div className="grid grid-cols-1 gap-8">
           <div className="text-center mb-4">
-            <h1 className="text-8xl font-bold text-white drop-shadow-2xl animate-pulse mb-4">
+            <h1 className="text-4xl md:text-8xl font-bold text-white drop-shadow-2xl animate-pulse mb-4">
               🔨 Whack-a-Mole
             </h1>
             <p className="text-2xl text-white/90 font-semibold">
