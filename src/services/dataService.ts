@@ -31,52 +31,20 @@ class DataService {
 
   async saveScore(player: Player): Promise<void> {
     try {
-      // Check if player already exists
-      const { data: existingPlayer, error: fetchError } = await supabase
+      // Always insert new entry - no deduplication by name
+      const { error: insertError } = await supabase
         .from('leaderboard')
-        .select('*')
-        .eq('name', player.name)
-        .single();
+        .insert({
+          id: player.id,
+          name: player.name,
+          score: player.score,
+          max_combo: player.maxCombo || null,
+          created_at: new Date(player.timestamp).toISOString()
+        });
 
-      if (fetchError && fetchError.code !== 'PGRST116') {
-        // PGRST116 is "not found" error, which is expected for new players
-        console.error('Error checking existing player:', fetchError);
-        throw fetchError;
-      }
-
-      if (existingPlayer) {
-        // Update existing player if new score is better
-        if (player.score > existingPlayer.score) {
-          const { error: updateError } = await supabase
-            .from('leaderboard')
-            .update({
-              score: player.score,
-              max_combo: player.maxCombo || null,
-              created_at: new Date(player.timestamp).toISOString()
-            })
-            .eq('id', existingPlayer.id);
-
-          if (updateError) {
-            console.error('Error updating player score:', updateError);
-            throw updateError;
-          }
-        }
-      } else {
-        // Insert new player
-        const { error: insertError } = await supabase
-          .from('leaderboard')
-          .insert({
-            id: player.id,
-            name: player.name,
-            score: player.score,
-            max_combo: player.maxCombo || null,
-            created_at: new Date(player.timestamp).toISOString()
-          });
-
-        if (insertError) {
-          console.error('Error inserting new player:', insertError);
-          throw insertError;
-        }
+      if (insertError) {
+        console.error('Error inserting new player:', insertError);
+        throw insertError;
       }
     } catch (error) {
       console.error('Error saving score:', error);
