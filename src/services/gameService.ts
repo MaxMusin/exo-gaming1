@@ -5,6 +5,7 @@ class GameService {
   private gameTimer: NodeJS.Timeout | null = null;
   private moleSpawnTimer: NodeJS.Timeout | null = null;
   private moleDeactivateTimer: NodeJS.Timeout | null = null;
+  private lastMoleId: number | null = null;
 
   startGame(): void {
     this.stopGame(); // Clear any existing timers
@@ -52,8 +53,14 @@ class GameService {
         return;
       }
 
-      // Generate random mole ID (1-12)
-      const moleId = Math.floor(Math.random() * 12) + 1;
+      // Generate random mole ID (1-12) that's different from the last one
+      let moleId: number;
+      do {
+        moleId = Math.floor(Math.random() * 12) + 1;
+      } while (moleId === this.lastMoleId);
+      
+      // Update last mole ID
+      this.lastMoleId = moleId;
       
       // Activate the mole
       store.dispatch(activateMole(moleId));
