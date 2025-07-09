@@ -1,23 +1,28 @@
 import { Player } from '../store/types';
+import { supabase } from '../lib/supabase';
 
 class DataService {
-  private readonly STORAGE_KEY = 'whack-a-mole-leaderboard';
-
-  // Simulate async API calls with delays
-  private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
   async getLeaderboard(): Promise<Player[]> {
-    await this.delay(100); // Simulate network delay
-    
     try {
-      const stored = localStorage.getItem(this.STORAGE_KEY);
-      if (stored) {
-        const players: Player[] = JSON.parse(stored);
-        return players.sort((a, b) => b.score - a.score).slice(0, 10);
+      const { data, error } = await supabase
+        .from('leaderboard')
+        .select('*')
+        .order('score', { ascending: false })
+        .limit(10);
+
+      if (error) {
+        console.error('Error fetching leaderboard:', error);
+        return [];
       }
-      return [];
+
+      // Transform Supabase data to Player format
+      return data.map((row: any) => ({
+        id: row.id,
+        name: row.name,
+        score: row.score,
+        timestamp: new Date(row.created_at).getTime(),
+        maxCombo: row.max_combo || undefined
+      }));
     } catch (error) {
       console.error('Error loading leaderboard:', error);
       return [];
@@ -25,34 +30,53 @@ class DataService {
   }
 
   async saveScore(player: Player): Promise<void> {
-    await this.delay(50); // Simulate network delay
-    
     try {
-      const currentLeaderboard = await this.getLeaderboard();
-      
       // Check if player already exists
-      const existingPlayerIndex = currentLeaderboard.findIndex(
-        p => p.name === player.name
-      );
-      
-      if (existingPlayerIndex !== -1) {
+      const { data: existingPlayer, error: fetchError } = await supabase
+        .from('leaderboard')
+        .select('*')
+        .eq('name', player.name)
+        .single();
+
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        // PGRST116 is "not found" error, which is expected for new players
+        console.error('Error checking existing player:', fetchError);
+        throw fetchError;
+      }
+
+      if (existingPlayer) {
         // Update existing player if new score is better
-        if (player.score > currentLeaderboard[existingPlayerIndex].score) {
-          currentLeaderboard[existingPlayerIndex] = player;
+        if (player.score > existingPlayer.score) {
+          const { error: updateError } = await supabase
+            .from('leaderboard')
+            .update({
+              score: player.score,
+              max_combo: player.maxCombo || null,
+              created_at: new Date(player.timestamp).toISOString()
+            })
+            .eq('id', existingPlayer.id);
+
+          if (updateError) {
+            console.error('Error updating player score:', updateError);
+            throw updateError;
+          }
         }
       } else {
-        // Add new player
-        currentLeaderboard.push(player);
-      }
-      
-      // Sort by score and keep top 10
-      const sortedPlayers = currentLeaderboard
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 10);
-      
-      // Only save if player made it to top 10
-      if (sortedPlayers.find(p => p.id === player.id)) {
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(sortedPlayers));
+        // Insert new player
+        const { error: insertError } = await supabase
+          .from('leaderboard')
+          .insert({
+            id: player.id,
+            name: player.name,
+            score: player.score,
+            max_combo: player.maxCombo || null,
+            created_at: new Date(player.timestamp).toISOString()
+          });
+
+        if (insertError) {
+          console.error('Error inserting new player:', insertError);
+          throw insertError;
+        }
       }
     } catch (error) {
       console.error('Error saving score:', error);
@@ -61,8 +85,20 @@ class DataService {
   }
 
   async clearLeaderboard(): Promise<void> {
-    await this.delay(50); // Simulate network delay
-    localStorage.removeItem(this.STORAGE_KEY);
+    try {
+      const { error } = await supabase
+        .from('leaderboard')
+        .delete()
+        .neq('id', ''); // Delete all records
+
+      if (error) {
+        console.error('Error clearing leaderboard:', error);
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error clearing leaderboard:', error);
+      throw error;
+    }
   }
 
   generatePlayerId(): string {

@@ -3,7 +3,7 @@ const Footer: React.FC = () => {
     <footer className="text-white/50 text-sm text-center">
       <p>Built with ❤️ for Gaming1 Challenge • Maxime Musin</p>
       <p className="mt-1">
-        React • TypeScript • Redux • Tailwind CSS • shadcn • pnpm
+        React • TypeScript • Redux • Tailwind CSS • shadcn • Supabase • pnpm
       </p>
     </footer>
   );

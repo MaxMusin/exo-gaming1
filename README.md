@@ -38,7 +38,7 @@ A modern, feature-rich Whack-a-Mole game built with React, TypeScript, Redux, an
 - **Package Manager**: pnpm
 - **Testing**: Jest + React Testing Library
 - **Audio**: Web Audio API (no external files)
-- **Storage**: LocalStorage for leaderboard persistence
+- **Backend**: Supabase for leaderboard persistence and cloud storage
 - **Notifications**: Sonner for toast notifications
 - **Icons**: Lucide React icons
 - **Utilities**: clsx, tailwind-merge, class-variance-authority
@@ -68,6 +68,40 @@ pnpm start
 ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+### Supabase Setup (Required for Leaderboard)
+
+The game uses Supabase for persistent leaderboard storage. Follow these steps to set up your backend:
+
+1. **Create a Supabase project**:
+   - Go to [supabase.com](https://supabase.com) and sign in
+   - Click "New Project" and choose your organization
+   - Name: `whack-a-mole-leaderboard`
+   - Choose your preferred region
+   - Wait for project initialization (2-3 minutes)
+
+2. **Get your credentials**:
+   - In Supabase dashboard, go to **Settings** → **API**
+   - Copy your **Project URL** and **Anon Key**
+
+3. **Create environment variables**:
+   ```bash
+   # Create .env file in project root
+   REACT_APP_SUPABASE_URL=https://your-project-id.supabase.co
+   REACT_APP_SUPABASE_ANON_KEY=your-anon-key-here
+   ```
+
+4. **Set up the database**:
+   - In Supabase dashboard, go to **SQL Editor**
+   - Copy and paste the contents of `supabase-schema.sql`
+   - Click "Run" to create the leaderboard table
+
+5. **Restart your development server**:
+   ```bash
+   pnpm start
+   ```
+
+**Note**: Without Supabase setup, the leaderboard will show connection errors. The game will still be playable, but scores won't persist.
 
 ### Available Scripts
 
@@ -127,12 +161,13 @@ src/
 │   └── index.ts        # Store configuration
 ├── services/           # Business logic services
 │   ├── gameService.ts  # Game timer and mole spawning
-│   ├── dataService.ts  # Leaderboard persistence
+│   ├── dataService.ts  # Supabase leaderboard operations
 │   ├── soundService.ts # Audio effects
 │   └── index.ts        # Service exports
 ├── hooks/              # Custom React hooks
 │   └── useAppDispatch.ts # Typed Redux hooks
 ├── lib/                # Library utilities
+│   ├── supabase.ts     # Supabase client configuration
 │   └── utils.ts        # Utility functions
 ├── types/              # Global TypeScript definitions
 │   └── images.d.ts     # Image type declarations
@@ -154,8 +189,9 @@ src/
 5. **Component Architecture**: Separation of concerns with reusable, testable components
 6. **Service Layer**: Business logic separated from UI components for better maintainability
 7. **Sonner Toasts**: Using recommended toast solution instead of deprecated Radix-based toasts
-8. **Automatic Score Saving**: Seamless leaderboard integration without manual submission
-9. **Proper Game Flow**: Countdown system ensures consistent game start experience
+8. **Supabase Backend**: Cloud-based leaderboard storage with real-time capabilities and Row Level Security
+9. **Automatic Score Saving**: Seamless leaderboard integration without manual submission
+10. **Proper Game Flow**: Countdown system ensures consistent game start experience
 
 ## 🧪 Testing
 
@@ -269,4 +305,4 @@ This project is created for the Gaming1 hiring challenge.
 ---
 
 **Built with ❤️ for Gaming1 Challenge • Maxime Musin**  
-*React • TypeScript • Redux • Tailwind CSS • shadcn/ui • pnpm*
+*React • TypeScript • Redux • Tailwind CSS • shadcn/ui • Supabase • pnpm*
