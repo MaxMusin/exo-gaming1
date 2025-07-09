@@ -171,21 +171,12 @@ const gameSlice = createSlice({
           }
         }
       } else {
-        // Miss - only reset combo if we're sure it's a miss
-        // Don't penalize clicks on inactive holes as much
-        if (targetMole && !targetMole.isActive && state.activeMoleId !== moleId) {
-          // This was a click on an inactive hole - mild penalty
-          if (state.combo > 0) {
-            state.combo = Math.max(0, state.combo - 1);
-          }
-        } else if (state.combo > 0) {
-          // This was a clear miss - full penalty
-          state.combo = 0;
-          state.lastHitTime = null;
-        }
+        // Miss - always reset combo on any miss
+        state.combo = 0;
+        state.lastHitTime = null;
         
-        // Play miss sound only for clear misses
-        if (state.soundEnabled && targetMole && !targetMole.isActive) {
+        // Play miss sound
+        if (state.soundEnabled) {
           soundService.playMiss();
         }
       }
