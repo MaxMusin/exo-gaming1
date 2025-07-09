@@ -10,6 +10,9 @@ class GameService {
   startGame(): void {
     this.stopGame(); // Clear any existing timers
     
+    // Reset lastMoleId to ensure no consecutive duplicates across game sessions
+    this.lastMoleId = null;
+    
     // Start main game timer (decrements every second)
     this.gameTimer = setInterval(() => {
       const state = store.getState();
