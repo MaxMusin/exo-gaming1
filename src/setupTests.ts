@@ -71,12 +71,32 @@ const sessionStorageMock = {
 };
 global.sessionStorage = sessionStorageMock as any;
 
-// Suppress console warnings during tests
-const originalConsoleWarn = console.warn;
+// Mock Web Audio API
+const mockAudioContext = {
+  createOscillator: jest.fn(() => ({
+    connect: jest.fn(),
+    start: jest.fn(),
+    stop: jest.fn(),
+    frequency: { value: 0 },
+    type: 'sine'
+  })),
+  createGain: jest.fn(() => ({
+    connect: jest.fn(),
+    gain: { value: 0 }
+  })),
+  destination: {},
+  currentTime: 0
+};
+
+global.AudioContext = jest.fn(() => mockAudioContext) as any;
+(global as any).webkitAudioContext = jest.fn(() => mockAudioContext) as any;
+
+// Mock console.warn to suppress Web Audio API warnings in tests
+const originalWarn = console.warn;
 beforeEach(() => {
   console.warn = jest.fn();
 });
 
 afterEach(() => {
-  console.warn = originalConsoleWarn;
+  console.warn = originalWarn;
 });

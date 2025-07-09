@@ -13,6 +13,9 @@ jest.mock('../../../../services/dataService', () => ({
   },
 }));
 
+import { dataService } from '../../../../services/dataService';
+const mockGetLeaderboard = dataService.getLeaderboard as jest.MockedFunction<typeof dataService.getLeaderboard>;
+
 // Mock the toast
 jest.mock('sonner', () => ({
   toast: {
@@ -78,23 +81,29 @@ const renderLeaderboard = (initialState = {}) => {
 describe('Leaderboard - Tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetLeaderboard.mockResolvedValue([]);
   });
 
-  it('renders leaderboard title', () => {
+  it('renders leaderboard title', async () => {
     renderLeaderboard();
     expect(screen.getByText('🏆 Leaderboard')).toBeInTheDocument();
+    
+    // Wait for async loading to complete
+    await screen.findByText('No scores yet!');
   });
 
-  it('shows empty state when no players', () => {
+  it('shows empty state when no players', async () => {
+    mockGetLeaderboard.mockResolvedValue([]);
     renderLeaderboard({
-      leaderboard: { players: [] },
+      leaderboard: { players: [], loading: false },
     });
 
-    expect(screen.getByText('No scores yet!')).toBeInTheDocument();
+    // Wait for the component to finish loading
+    await screen.findByText('No scores yet!');
     expect(screen.getByText('Be the first to play and set a record!')).toBeInTheDocument();
   });
 
-  it('displays players when loaded', () => {
+  it('displays players when loaded', async () => {
     const mockPlayers = [
       {
         id: '1',
@@ -112,17 +121,19 @@ describe('Leaderboard - Tests', () => {
       },
     ];
 
+    mockGetLeaderboard.mockResolvedValue(mockPlayers);
     renderLeaderboard({
-      leaderboard: { players: mockPlayers },
+      leaderboard: { players: mockPlayers, loading: false },
     });
 
-    expect(screen.getByText('Player 1')).toBeInTheDocument();
+    // Wait for the component to finish loading and display players
+    await screen.findByText('Player 1');
     expect(screen.getByText('Player 2')).toBeInTheDocument();
     expect(screen.getByText('1,000')).toBeInTheDocument();
     expect(screen.getByText('800')).toBeInTheDocument();
   });
 
-  it('handles duplicate player names correctly', () => {
+  it('handles duplicate player names correctly', async () => {
     const mockPlayers = [
       {
         id: '1',
@@ -140,14 +151,17 @@ describe('Leaderboard - Tests', () => {
       },
     ];
 
+    mockGetLeaderboard.mockResolvedValue(mockPlayers);
     renderLeaderboard({
-      leaderboard: { players: mockPlayers },
+      leaderboard: { players: mockPlayers, loading: false },
     });
 
+    // Wait for the component to finish loading and display players
+    await screen.findByText('1,000');
+    
     // Both entries should be displayed
     const johnEntries = screen.getAllByText('John');
     expect(johnEntries).toHaveLength(2);
-    expect(screen.getByText('1,000')).toBeInTheDocument();
     expect(screen.getByText('800')).toBeInTheDocument();
   });
 });
