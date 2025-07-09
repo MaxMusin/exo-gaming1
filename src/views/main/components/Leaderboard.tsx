@@ -76,6 +76,26 @@ const Leaderboard: React.FC = () => {
     return player.name === playerName;
   };
 
+  const SkeletonEntry: React.FC<{ rank: number }> = ({ rank }) => (
+    <div className="rounded-lg border border-white/20">
+      <div className={`rounded-lg flex p-4 items-center justify-between ${getRankStyle(rank)}`}>
+        <div className="flex items-center space-x-3">
+          <span className="text-2xl font-bold min-w-[3rem] text-center">
+            {getRankIcon(rank)}
+          </span>
+          <div>
+            <div className="h-5 bg-white/20 rounded animate-pulse w-24 mb-2"></div>
+            <div className="h-4 bg-white/15 rounded animate-pulse w-16"></div>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="h-6 bg-white/20 rounded animate-pulse w-16 mb-1"></div>
+          <div className="h-4 bg-white/15 rounded animate-pulse w-20"></div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 shadow-2xl border border-white/20 flex flex-col gap-4">
       <div className="flex justify-between items-center">
@@ -86,22 +106,24 @@ const Leaderboard: React.FC = () => {
           size="icon"
           className="text-white/70 bg-white/10 border-white/20 hover:text-white transition-colors duration-200 hover:bg-white/30"
           title="Refresh leaderboard"
+          disabled={loading}
         >
           🔄
         </Button>
       </div>
-      {loading && (
-        <div className="flex justify-center items-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-          <span className="ml-3 text-white">Loading...</span>
-        </div>
-      )}
       {error && (
         <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 mb-4">
           <p className="text-red-300 text-sm">{error}</p>
         </div>
       )}
-      {!loading && (
+      
+      {loading ? (
+        <div className="space-y-3 max-h-96">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <SkeletonEntry key={index} rank={index + 1} />
+          ))}
+        </div>
+      ) : (
         <div className="space-y-3 max-h-96">
           {players.length === 0 ? (
             <div className="text-center py-8">
