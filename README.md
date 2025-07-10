@@ -7,15 +7,16 @@ A modern, feature-rich Whack-a-Mole game built with React, TypeScript, Redux, an
 ### Core Gameplay
 - **3x4 Grid Layout**: 12 mole holes arranged in a classic grid
 - **2-minute Timer**: Fast-paced gameplay with countdown
-- **Random Mole Spawning**: Unpredictable mole appearances using RNG
+- **Improved RNG**: Enhanced random mole spawning that prevents consecutive duplicates
 - **Click/Tap Controls**: Responsive input for all devices
 - **Proper Game Flow**: Countdown sequence before game starts, preventing premature mole spawning
+- **Reliable Combo System**: Combos properly reset on misses and timeouts
 
 ### Advanced Features
-- **🔥 Combo System**: Build combos for bonus points (up to 5x multiplier)
+- **🔥 Combo System**: Build combos for bonus points (up to 5x multiplier) with reliable reset on misses
 - **🔊 Sound Effects**: Dynamic audio feedback using Web Audio API with toggle control
 - **✨ Visual Effects**: Animated score popups and visual feedback
-- **🏆 Leaderboard**: Top 10 players with persistent storage and automatic score saving
+- **🏆 Leaderboard**: Top 10 players with Supabase cloud storage, automatic score saving, and skeleton loading UI
 - **📱 Responsive Design**: Works on desktop, tablet, and mobile
 - **🎨 Modern UI**: Built with shadcn/ui components for accessibility and consistency
 - **🔔 Toast Notifications**: Sonner-based toast system for user feedback
@@ -192,18 +193,29 @@ src/
 8. **Supabase Backend**: Cloud-based leaderboard storage with real-time capabilities and Row Level Security
 9. **Automatic Score Saving**: Seamless leaderboard integration without manual submission
 10. **Proper Game Flow**: Countdown system ensures consistent game start experience
+11. **Enhanced RNG**: Prevents consecutive duplicate mole spawns for better gameplay variety
+12. **Robust Combo System**: Reliable combo tracking with proper reset logic on misses and timeouts
 
 ## 🧪 Testing
 
-The project includes comprehensive test coverage:
+The project includes comprehensive test coverage with dedicated test files:
 
+### Test Files
+- **gameService.test.ts**: Tests RNG logic, timer management, and mole deactivation
+- **dataService.test.ts**: Tests leaderboard persistence and duplicate name handling
+- **Leaderboard.test.tsx**: Tests UI components and skeleton loading states
+- **setupTests.ts**: Jest environment configuration with proper mocks
+
+### Test Categories
 - **Unit Tests**: Redux slices, services, and utility functions
 - **Integration Tests**: Component interactions and state management
 - **Component Tests**: UI rendering and user interactions
+- **Service Tests**: Business logic and external API interactions
 
 Run tests:
 ```bash
-pnpm test
+pnpm test              # Run all tests
+pnpm test:coverage     # Run with coverage report
 ```
 
 ## 🎨 Styling & Animations
@@ -252,17 +264,17 @@ The `build` folder contains optimized static files ready for deployment to any s
 
 ## 🎯 Gaming1 Challenge Requirements
 
-✅ **All requirements met**:
+✅ **All requirements met and enhanced**:
 - React with TypeScript ✅
 - Redux for state management ✅
 - 3x4 mole grid layout ✅
-- RNG-based mole activation ✅
-- Scoring system with combo multipliers ✅
+- Enhanced RNG-based mole activation (no consecutive duplicates) ✅
+- Robust scoring system with reliable combo multipliers ✅
 - 2-minute game timer ✅
-- Top 10 leaderboard with automatic saving ✅
+- Top 10 leaderboard with cloud storage and automatic saving ✅
 - Real-time score updates ✅
-- Unit/integration testing ✅
-- Clean, maintainable code ✅
+- Comprehensive unit/integration testing with dedicated test files ✅
+- Clean, maintainable code with TypeScript throughout ✅
 - Public git repository ✅
 
 ## 🚀 Future Enhancements
@@ -274,12 +286,16 @@ The `build` folder contains optimized static files ready for deployment to any s
 - **Analytics**: Detailed gameplay statistics and progress tracking
 
 ✨ **Bonus features for extra polish**:
-- Advanced combo system
-- Dynamic sound effects
-- Animated visual feedback
-- Responsive design
-- Accessibility features
-- Comprehensive test coverage
+- Advanced combo system with reliable reset logic
+- Dynamic sound effects with Web Audio API
+- Animated visual feedback and skeleton loading states
+- Responsive design for all devices
+- Accessibility features with shadcn/ui components
+- Comprehensive test coverage with dedicated test files
+- Enhanced RNG preventing consecutive duplicate spawns
+- Cloud-based leaderboard with Supabase integration
+- Custom themed SVG favicon
+- Modern UI with shadcn/ui components
 
 ## 👨‍💻 Development
 
