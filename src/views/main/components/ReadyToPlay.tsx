@@ -3,23 +3,20 @@ import { Button } from "../../../components/ui";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { setPlayerName } from "../../../store/gameSlice";
 import hammerTimeSound from "../../../assets/sounds/hammer-time.mp3";
+import { ReadyToPlayProps } from "../MainView.types";
 
-interface ReadyToPlayProps {
-    onStartGame: () => void;
-}
-
-const ReadyToPlay: React.FC<ReadyToPlayProps> = ({onStartGame}) => {
+const ReadyToPlay: React.FC<ReadyToPlayProps> = ({ onStartGame }) => {
   const dispatch = useAppDispatch();
   const [inputName, setInputName] = useState("");
-  
+
   const handleStartGame = () => {
     if (inputName.trim()) {
       // Play the hammer time sound before starting the game
       const audio = new Audio(hammerTimeSound);
-      audio.play().catch(error => {
-        console.warn('Could not play hammer time sound:', error);
+      audio.play().catch((error) => {
+        console.warn("Could not play hammer time sound:", error);
       });
-      
+
       dispatch(setPlayerName(inputName.trim()));
       onStartGame();
     }

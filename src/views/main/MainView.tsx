@@ -8,10 +8,7 @@ import {
   Leaderboard,
   ReadyToPlay,
 } from "./components";
-
-interface MainViewProps {
-  onStartGame: () => void;
-}
+import { MainViewProps } from "./MainView.types";
 
 const MainView: React.FC<MainViewProps> = ({ onStartGame }) => {
   return (

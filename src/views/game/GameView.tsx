@@ -20,9 +20,7 @@ import { Toaster, Button } from "../../components/ui";
 import { toast } from "sonner";
 import backgroundImage from "../../assets/images/WAM_bg.jpg";
 import { Player } from "../../store/types";
-interface GameViewProps {
-  onReturnToMenu: () => void;
-}
+import { GameViewProps } from "./GameView.types";
 
 const GameView: React.FC<GameViewProps> = ({ onReturnToMenu }) => {
   const dispatch = useAppDispatch();
@@ -277,10 +275,7 @@ const GameView: React.FC<GameViewProps> = ({ onReturnToMenu }) => {
           <CountdownOverlay countdown={countdown} />
         )}
         {gameEnded && (
-          <GameOverOverlay
-            score={score}
-            onReturnToMenu={handleReturnToMenu}
-          />
+          <GameOverOverlay score={score} onReturnToMenu={handleReturnToMenu} />
         )}
         <div className="flex justify-between items-center py-2 px-4 w-full">
           <ScoreDisplay />

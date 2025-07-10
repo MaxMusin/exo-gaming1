@@ -1,6 +1,6 @@
 import { useAppSelector } from "../../../hooks/useAppDispatch";
 
-const CountdownBar = () => {
+const CountdownBar: React.FC = () => {
   const { timeLeft } = useAppSelector((state) => state.game);
 
   return (

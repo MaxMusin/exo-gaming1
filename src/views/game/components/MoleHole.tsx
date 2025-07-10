@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/useAppDispatch";
 import { whackMole } from "../../../store/gameSlice";
-import { Mole } from "../../../store/types";
 import MoleSprite from "../../../assets/images/WAM_Mole.png";
 import HoleSprite from "../../../assets/images/WAM_Hole.png";
 import Hammer from "../../../assets/images/WAM_Hammer.png";
-interface MoleHoleProps {
-  mole: Mole;
-}
+import { MoleHoleProps } from "../GameView.types";
 
 const MoleHole: React.FC<MoleHoleProps> = ({ mole }) => {
   const dispatch = useAppDispatch();

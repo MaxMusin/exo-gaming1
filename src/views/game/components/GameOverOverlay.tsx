@@ -3,11 +3,7 @@ import { Button } from "../../../components/ui";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { gameService } from "../../../services";
 import { startCountdown, resetGame } from "../../../store/gameSlice";
-
-interface GameOverOverlayProps {
-  score: number;
-  onReturnToMenu: () => void;
-}
+import { GameOverOverlayProps } from "../GameView.types";
 
 export const GameOverOverlay: React.FC<GameOverOverlayProps> = ({
   score,

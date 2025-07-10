@@ -1,6 +1,4 @@
-type CountdownOverlayProps = {
-  countdown: number;
-};
+import { CountdownOverlayProps } from "../GameView.types";
 
 const CountdownOverlay: React.FC<CountdownOverlayProps> = ({ countdown }) => {
   return (
